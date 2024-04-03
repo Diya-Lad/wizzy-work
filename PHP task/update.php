@@ -11,7 +11,7 @@
     $lastname = $result[2];
     $email = $result[3];
     $id = $result[0];
-    ?>
+?>
 
 <!DOCTYPE html>
 <html lang="en">

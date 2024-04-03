@@ -1,0 +1,41 @@
+#index:
+#    path: /
+#    controller: App\Controller\DefaultController::index
+
+# app_lucky_number:
+#     path: /lucky/number
+#     controller: App\Controller\LuckyController::number
+
+demo_fun:
+    path: /demo
+    controller: App\Controller\RouteDemoController::fun
+
+demo_post_show:
+    path:       /demo/show/{id}
+    controller: App\Controller\RouteDemoController::show
+    methods:    GET|HEAD
+
+# Also default parameter
+parameter_validation:
+    path:   /demo/{num}
+    controller: App\Controller\RouteDemoController::number
+    defaults:
+        page: 1
+    requirements:
+        page: '\d+'
+
+# Redirecting to URLs and Routes Directly from a Route
+doc_shortcut:
+    path: /doc
+    controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController
+    defaults:
+        route: 'demo_fun'
+
+# render a template from a route.
+render_template:
+    path:          /temp
+    controller:    Symfony\Bundle\FrameworkBundle\Controller\TemplateController
+    defaults:
+        # the path of the template to render
+        template:  'pages/number.html.twig'
+        
