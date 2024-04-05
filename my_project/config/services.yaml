@@ -4,6 +4,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
+    app.admin_email: 'laddiya@gamil.com'
 
 services:
     # default configuration for services in *this* file
@@ -28,3 +29,18 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    App\EventListener\ExceptionListener:
+        tags: 
+            - {name: kernel.event_listener, event: kernel.exception}
+
+# # config/services.yaml
+# imports:
+#     - { resource: 'legacy_config.php' }
+
+#     # glob expressions are also supported to load multiple files
+#     - { resource: '/etc/myapp/*.yaml' }
+
+#     # ignore_errors: not_found silently discards errors if the loaded file doesn't exist
+#     - { resource: 'my_config_file.xml', ignore_errors: not_found }
+#     # ignore_errors: true silently discards all errors (including invalid code and not found)
+#     - { resource: 'my_other_config_file.xml', ignore_errors: true }

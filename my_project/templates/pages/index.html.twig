@@ -1,0 +1,7 @@
+<h1>Hello world </h1>
+
+{% for message in app.flashes('notice') %}
+    
+    <p>    {{ message }} </p>
+   
+{% endfor %}

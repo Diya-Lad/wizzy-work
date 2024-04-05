@@ -1,0 +1,35 @@
+
+<h1>Author: {{author}}</h1>
+
+{{ include('twigPages/_reusable.html.twig') }}
+
+<h4>There are {{list|length}} persons</h4>
+
+{% for person in list %}
+
+    <h3>Name: {{person.name}}  <a href={{ path('demo_show', {id: person.id}) }}>Click to show</a> </h3>
+
+{% endfor %}
+
+<img src="{{ asset('images/img.jpeg') }}" alt="image"/>
+
+<p>Username: {{ app.user.username ?? 'Anonymous user' }}</p>
+{% if app.debug %}
+    <p>Request method: {{ app.request.method }}</p>
+    <p>Application Environment: {{ app.environment }}</p>
+{% endif %}
+
+{# Dump function #}
+
+{{ dump(list) }}
+{% dump list %}
+
+{% for person in list %}
+
+    <h5>{{ dump(person) }} </h5>
+
+{% endfor %}
+    
+{{ render(controller(
+        'App\\Controller\\TemplateAndTwigDemoController::reusableTempControllerDemo'
+    )) }}

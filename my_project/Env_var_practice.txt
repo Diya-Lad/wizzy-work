@@ -1,0 +1,17 @@
+Once defined, you can reference this parameter value from any other configuration file using a special syntax: 
+wrap the parameter name in two % (e.g. %app.admin_email%):
+
+You can reference environment variables using the special syntax %env(ENV_VAR_NAME)%. 
+The values of these options are resolved at runtime (only once per request, to not impact performance).
+url: '%env(resolve:DATABASE_URL)%' --> in config file
+
+The .env file is read and parsed on every request and its env vars are added to the $_ENV & $_SERVER PHP 
+variables. Any existing env vars are never overwritten by the values defined in .env, so you can combine 
+both.
+
+Use environment variables in values by prefixing variables with $:
+DB_USER=root
+DB_PASS=${DB_USER}pass # include the user as a password prefix
+
+In production, the .env files are also parsed and loaded on each request. So the easiest way to define 
+env vars is by creating a .env.local file on your production server(s) with your production values.
