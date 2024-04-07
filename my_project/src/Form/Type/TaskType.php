@@ -15,7 +15,7 @@ class TaskType extends AbstractType
     {
         $builder
             ->add('task', TextType::class)
-            ->add('dueDate', DateType::class)
+            ->add('dueDate', DateType::class, ['label'  => 'To Be Completed Before: '])
             ->add('save', SubmitType::class, ['label' => 'Create Task'])
         ;
     }
@@ -25,7 +25,10 @@ class TaskType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Task::class,
             'csrf_protection' => false,
+            // 'require_due_date' => false,
         ]);
+
+        // $resolver->setAllowedTypes('require_due_date', 'bool');
     }
 }
 

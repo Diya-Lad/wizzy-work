@@ -31,6 +31,8 @@ class TaskController extends AbstractController
         $task->setDueDate(new \DateTime('tomorrow'));
 
         $form = $this->createFormBuilder($task)
+            ->setAction($this->generateUrl('target_url'))
+            ->setMethod('GET')
             ->add('task', TextType::class)
             ->add('dueDate', DateType::class)
             ->add('save', SubmitType::class, ['label' => 'Create Task'])
@@ -45,6 +47,8 @@ class TaskController extends AbstractController
         $task = new Task();
         // $task->setTask('To Complete symfony documentation');
         // $task->setDueDate(new \DateTime('tomorrow'));
+
+        $dueDateIsRequired = new \DateTime('tomorrow');
 
         $form = $this->createForm(TaskType::class, $task);
 
@@ -64,4 +68,20 @@ class TaskController extends AbstractController
             'form' => $form->createView()
         ]);
     }
+
+    // Set action and method parameter
+    // $form = $this->createForm(TaskType::class, $task, [
+    //     'action' => $this->generateUrl('target_route'),
+    //     'method' => 'GET',
+    // ]);
+
+    // If you need extra fields in the form that won't be stored in the object (for example to add an 
+    // "I agree with these terms" checkbox), set the mapped option to false in those fields:
+    // $builder
+    //         ->add('task')
+    //         ->add('dueDate')
+    //         ->add('agreeTerms', CheckboxType::class, ['mapped' => false])
+    //         ->add('save', SubmitType::class)
+    //     ;
+
 }
