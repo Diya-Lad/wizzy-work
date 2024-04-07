@@ -1,0 +1,138 @@
+<?php
+
+namespace App\Repository;
+
+use App\Entity\Product;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
+use Doctrine\Persistence\ManagerRegistry;
+
+/**
+ * @extends ServiceEntityRepository<Product>
+ *
+ * @method Product|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Product|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Product[]    findAll()
+ * @method Product[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
+class ProductRepository extends ServiceEntityRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, Product::class);
+    }
+
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function add(Product $entity, bool $flush = true): void
+    {
+        $this->_em->persist($entity);
+        if ($flush) {
+            $this->_em->flush();
+        }
+    }
+
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function remove(Product $entity, bool $flush = true): void
+    {
+        $this->_em->remove($entity);
+        if ($flush) {
+            $this->_em->flush();
+        }
+    }
+
+    /**
+     * @return Product[]
+     */
+    public function getProductsGreaterThanPrice(int $price){
+
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'Select p from APP\Entity\Product p where p.price> :price order by p.price asc'
+        )->setParameter('price', $price);
+
+        return $query->getResult();
+    }
+
+    public function findAllGreaterThanPrice(int $price, bool $includeUnavailableProducts = false): array
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->where('p.price > :price')
+            ->setParameter('price', $price)
+            ->orderBy('p.price', 'ASC');
+
+        if (!$includeUnavailableProducts) {
+            $qb->andWhere('p.available = TRUE');
+        }
+
+        $query = $qb->getQuery();
+        return $query->execute();
+
+        // to get just one result:
+        // $product = $query->setMaxResults(1)->getOneOrNullResult();
+    }
+
+    public function getProductsGreaterThanPriceWorkWithSql(int $price): array{
+
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = 'Select * from product p where p.price > :price order by p.price asc';
+
+        $stmt = $conn->prepare($sql);
+        $resultSet = $stmp->executeQuery(['price' => $price]);
+
+        return $resultSet->fetchAllAssociative();
+
+    }
+
+    //Joining related records
+    public function findOneByIdJoinedToCategory(int $productId): ?Product{
+
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT p, c
+            FROM App\Entity\Product p
+            INNER JOIN p.category c
+            WHERE p.id = :id'
+        )->setParameter('id', $productId);
+
+        return $query->getOneOrNullResult();
+    }
+
+    // /**
+    //  * @return Product[] Returns an array of Product objects
+    //  */
+    /*
+    public function findByExampleField($value)
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.exampleField = :val')
+            ->setParameter('val', $value)
+            ->orderBy('p.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+    */
+
+    /*
+    public function findOneBySomeField($value): ?Product
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.exampleField = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+    */
+}
